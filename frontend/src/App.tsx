@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import './App.css'
 
 interface HealthResponse {
@@ -6,38 +6,35 @@ interface HealthResponse {
   timestamp: string;
 }
 
-function App() {
-  const [health, setHealth] = useState<HealthResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+const fetchHealth = async (): Promise<HealthResponse> => {
+  const response = await fetch('http://localhost:5000/api/health');
+  if (!response.ok) {
+    throw new Error('Failed to fetch health');
+  }
+  return response.json();
+};
 
-  useEffect(() => {
-    fetch('http://localhost:5000/api/health')
-      .then(res => res.json())
-      .then(data => {
-        setHealth(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Failed to fetch health:', err);
-        setLoading(false);
-      });
-  }, []);
+function App() {
+  const { data: health, isLoading, isError } = useQuery({
+    queryKey: ['health'],
+    queryFn: fetchHealth,
+  });
 
   return (
     <div className="App">
-      <h1>EzyClassroomz</h1>
+      <h1>EzyClassroomz2</h1>
       <div className="card">
         <h2>API Status</h2>
-        {loading ? (
+        {isLoading ? (
           <p>Checking API...</p>
+        ) : isError ? (
+          <p>Failed to connect to API</p>
         ) : health ? (
           <div>
             <p>Status: {health.status}</p>
             <p>Timestamp: {new Date(health.timestamp).toLocaleString()}</p>
           </div>
-        ) : (
-          <p>Failed to connect to API</p>
-        )}
+        ) : null}
       </div>
     </div>
   )
