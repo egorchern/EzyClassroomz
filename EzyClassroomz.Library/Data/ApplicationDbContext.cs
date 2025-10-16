@@ -21,6 +21,7 @@ namespace EzyClassroomz.Library.Data
             {
                 entity.HasIndex(e => new { e.Email, e.Name }).IsUnique();
                 entity.HasIndex(e => e.Name).IsUnique();
+                entity.HasIndex(e => e.TenantId);
             });
         }
     }

@@ -20,6 +20,11 @@ namespace EzyClassroomz.Library.Entities
         [Required]
         [MaxLength(256)]
         public required string PasswordHash { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+        [Required]
+        [MaxLength(256)]
+        public required string TenantId { get; set; }
 
         /// <summary>
         /// Parameterless constructor for EF Core.
@@ -34,11 +39,14 @@ namespace EzyClassroomz.Library.Entities
         /// <param name="name"></param>
         /// <param name="email"></param>
         /// <param name="passwordHash"></param>
-        public User(string name, string email, string passwordHash)
+        public User(string name, string email, string passwordHash, string tenantId)
         {
             Name = name;
             Email = email;
             PasswordHash = passwordHash;
+            CreatedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
+            TenantId = tenantId;
         }
     }
 }
